@@ -7,44 +7,67 @@ import {
   // Navigate,
   // useParams,
   // useNavigate,
-  // useMatch
+  useMatch
 } from "react-router-dom"
 
-const Menu = () => {
-  const padding = {
-    paddingRight: 5
-  }
-  return (
-    <div>
-      <a href='#' style={padding}>anecdotes</a>
-      <a href='#' style={padding}>create new</a>
-      <a href='#' style={padding}>about</a>
-    </div>
-  )
-}
+// const Menu = () => {
+//   const padding = {
+//     paddingRight: 5
+//   }
+//   return (
+//     <div>
+//       <a href='#' style={padding}>anecdotes</a>
+//       <a href='#' style={padding}>create new</a>
+//       <a href='#' style={padding}>about</a>
+//     </div>
+//   )
+// }
 
+// eslint-disable-next-line react/prop-types
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
-    </ul>
+      {/*eslint-disable-next-line react/prop-types */}
+      {anecdotes.map(anecdote => <li key={anecdote.id} ><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></li>)}
+    </ul> 
   </div>
 )
 
-const About = () => (
-  <div>
-    <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
+// eslint-disable-next-line react/prop-types
+const Anecdote = ({ anecdote }) => {
+  if (!anecdote) {
+    // Handle the case where anecdote is null or undefined
+    return <div>Anecdote not found.</div>;
+  }
 
-    <em>An anecdote is a brief, revealing account of an individual person or an incident.
-      Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
-      such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
-      An anecdote is a story with a point.</em>
+  return (
+    <div>
+      {/* eslint-disable-next-line react/prop-types */}
+      <h2>{anecdote.content}</h2>
+      {/* eslint-disable-next-line react/prop-types */}
+      <div>{anecdote.author}</div>
+      {/* eslint-disable-next-line react/prop-types */}
+      <div>{anecdote.info }</div>
+      {/* eslint-disable-next-line react/prop-types */}
+      <div><strong>{"Votes " + anecdote.votes }</strong></div>
+    </div>
+  )
+}
 
-    <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
-  </div>
-)
+// const About = () => (
+//   <div>
+//     <h2>About anecdote app</h2>
+//     <p>According to Wikipedia:</p>
+
+//     <em>An anecdote is a brief, revealing account of an individual person or an incident.
+//       Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
+//       such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
+//       An anecdote is a story with a point.</em>
+
+//     <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
+//   </div>
+// )
 
 const Footer = () => (
   <div>
@@ -62,6 +85,7 @@ const CreateNew = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    // eslint-disable-next-line react/prop-types
     props.addNew({
       content,
       author,
@@ -110,27 +134,32 @@ const App = () => {
       id: 2
     }
   ])
+  const match = useMatch('/anecdotes/:id')
 
-  const [notification, setNotification] = useState('')
+  const anecdote = match
+    ? anecdotes.find(anecdote => anecdote.id === Number(match.params.id))
+    : null
+
+  // const [notification, setNotification] = useState('')
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
   }
 
-  const anecdoteById = (id) =>
-    anecdotes.find(a => a.id === id)
+  // const anecdoteById = (id) =>
+  //   anecdotes.find(a => a.id === id)
 
-  const vote = (id) => {
-    const anecdote = anecdoteById(id)
+  // const vote = (id) => {
+  //   const anecdote = anecdoteById(id)
 
-    const voted = {
-      ...anecdote,
-      votes: anecdote.votes + 1
-    }
+  //   const voted = {
+  //     ...anecdote,
+  //     votes: anecdote.votes + 1
+  //   }
 
-    setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
-  }
+  //   setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
+  // }
   const padding = {
     paddingRight: 5
   }
@@ -152,7 +181,7 @@ const App = () => {
         } */}
       </div>
       <Routes>
-        {/* <Route path="/notes/:id" element={<Note note={note} />} /> */}
+        <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />
         <Route path="/create" element={<CreateNew addNew={addNew} />} />
         {/* <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} /> */}
         {/* <Route path="/login" element={<Login onLogin={login} />} /> */}
@@ -166,5 +195,6 @@ const App = () => {
     </div>
   )
 }
+
 
 export default App

@@ -6,7 +6,7 @@ import {
   Link,
   // Navigate,
   // useParams,
-  // useNavigate,
+  useNavigate,
   useMatch
 } from "react-router-dom"
 
@@ -78,25 +78,53 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
+  const navigate = useNavigate();
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const [notification, setNotification] = useState('');
+  const [isNotificationVisible, setIsNotificationVisible] = useState(false);
+  
 
 
   const handleSubmit = (e) => {
     e.preventDefault()
     // eslint-disable-next-line react/prop-types
-    props.addNew({
+    const newAnecdote = {
       content,
       author,
       info,
       votes: 0
-    })
+    };
+
+    // Call the addNew function passed as a prop
+    // eslint-disable-next-line react/prop-types
+    props.addNew(newAnecdote);
+
+    // Show a notification
+    setNotification('Anecdote created successfully.');
+    setIsNotificationVisible(true);
+
+    // Hide the notification after 5 seconds
+    setTimeout(() => {
+      setIsNotificationVisible(false);
+    }, 5000);
+
+    // Reset the form fields
+    setContent('');
+    setAuthor('');
+    setInfo('');
   }
 
   return (
     <div>
       <h2>create a new anecdote</h2>
+      {isNotificationVisible && <div>{notification}</div>}
+      {isNotificationVisible && (
+        // eslint-disable-next-line no-undef, react/prop-types
+        <AnecdoteList anecdotes={props.anecdotes} />
+      )}
+      <button onClick={() => navigate('/')}>Show Anecdotes</button>
       <form onSubmit={handleSubmit}>
         <div>
           content
@@ -182,7 +210,7 @@ const App = () => {
       </div>
       <Routes>
         <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />
-        <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        <Route path="/create" element={<CreateNew addNew={addNew} anecdotes={anecdotes} />} />
         {/* <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} /> */}
         {/* <Route path="/login" element={<Login onLogin={login} />} /> */}
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />

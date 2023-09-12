@@ -1,5 +1,15 @@
 import { useState } from 'react'
 
+import {
+  Routes,
+  Route,
+  Link,
+  // Navigate,
+  // useParams,
+  // useNavigate,
+  // useMatch
+} from "react-router-dom"
+
 const Menu = () => {
   const padding = {
     paddingRight: 5
@@ -30,7 +40,7 @@ const About = () => (
     <em>An anecdote is a brief, revealing account of an individual person or an incident.
       Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
       such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
-      An anecdote is "a story with a point."</em>
+      An anecdote is a story with a point.</em>
 
     <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
   </div>
@@ -121,15 +131,38 @@ const App = () => {
 
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
+  const padding = {
+    paddingRight: 5
+  }
 
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
-      <Footer />
+      {/* <Menu /> */}
+      {/* <AnecdoteList anecdotes={anecdotes} /> */}
+      {/* <About /> */}
+      {/* <CreateNew addNew={addNew} /> */}
+      <div>
+        <Link style={padding} to="/">home</Link>
+        <Link style={padding} to="/create">createNewAnecdote</Link>
+        {/* <Link style={padding} to="/users">users</Link>
+        {user
+          ? <em>{user} logged in</em>
+          : <Link style={padding} to="/login">login</Link>
+        } */}
+      </div>
+      <Routes>
+        {/* <Route path="/notes/:id" element={<Note note={note} />} /> */}
+        <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        {/* <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} /> */}
+        {/* <Route path="/login" element={<Login onLogin={login} />} /> */}
+        <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
+      </Routes>
+      <div>
+        <br />
+        {/* <About /> */}
+        <Footer />
+      </div>
     </div>
   )
 }

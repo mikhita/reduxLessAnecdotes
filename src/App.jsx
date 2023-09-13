@@ -116,6 +116,12 @@ const CreateNew = (props) => {
     author.onChange({ target: { value: '' } });
     info.onChange({ target: { value: '' } });
   }
+  const handleReset = () => {
+    // Reset field values
+    content.onChange({ target: { value: '' } }); 
+    author.onChange({ target: { value: '' } });
+    info.onChange({ target: { value: '' } });
+  }
 
   return (
     <div>
@@ -141,6 +147,7 @@ const CreateNew = (props) => {
         </div>
         <button>create</button>
       </form>
+      <button onClick={handleReset}>reset</button>
     </div>
   )
 

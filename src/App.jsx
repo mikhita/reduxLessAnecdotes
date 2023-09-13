@@ -9,6 +9,7 @@ import {
   useNavigate,
   useMatch
 } from "react-router-dom"
+import { useField } from './hooks';
 
 // const Menu = () => {
 //   const padding = {
@@ -79,9 +80,9 @@ const Footer = () => (
 
 const CreateNew = (props) => {
   const navigate = useNavigate();
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const content = useField('text'); // Create fields for content, author, and info
+  const author = useField('text');
+  const info = useField('text');
   const [notification, setNotification] = useState('');
   const [isNotificationVisible, setIsNotificationVisible] = useState(false);
   
@@ -91,9 +92,9 @@ const CreateNew = (props) => {
     e.preventDefault()
     // eslint-disable-next-line react/prop-types
     const newAnecdote = {
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     };
 
@@ -110,10 +111,10 @@ const CreateNew = (props) => {
       setIsNotificationVisible(false);
     }, 5000);
 
-    // Reset the form fields
-    setContent('');
-    setAuthor('');
-    setInfo('');
+    // Reset field values
+    content.onChange({ target: { value: '' } }); 
+    author.onChange({ target: { value: '' } });
+    info.onChange({ target: { value: '' } });
   }
 
   return (
@@ -127,16 +128,16 @@ const CreateNew = (props) => {
       <button onClick={() => navigate('/')}>Show Anecdotes</button>
       <form onSubmit={handleSubmit}>
         <div>
-          content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+        Content:
+          <input {...content} /> {/* Spread the props from useField */}
         </div>
         <div>
-          author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          Author: 
+          <input {... author} />
         </div>
         <div>
-          url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          url for more info: 
+          <input {...info} />
         </div>
         <button>create</button>
       </form>
@@ -146,6 +147,7 @@ const CreateNew = (props) => {
 }
 
 const App = () => {
+  
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
